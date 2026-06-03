@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"backend-codegirls/config"
-	"backend-codegirls/routes"
 	"backend-codegirls/models"
+	"backend-codegirls/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -20,16 +20,28 @@ func main() {
 	db := config.NewDatabase()
 
 	// migrate tabel user
-	db.AutoMigrate(&models.User{})
+if err := db.AutoMigrate(&models.User{}); err != nil {
+	log.Fatal("❌ Gagal migrate tabel User:", err)
+}
+log.Println("✅ Berhasil migrate tabel User")
 
-	// migrate tabel peminjaman
-	db.AutoMigrate(&models.Peminjaman{})
+// migrate tabel peminjaman
+if err := db.AutoMigrate(&models.Peminjaman{}); err != nil {
+	log.Fatal("❌ Gagal migrate tabel Peminjaman:", err)
+}
+log.Println("✅ Berhasil migrate tabel Peminjaman")
 
-	// migrate tabel ruangan
-	db.AutoMigrate(&models.Ruangan{})
+// migrate tabel ruangan
+if err := db.AutoMigrate(&models.Ruangan{}); err != nil {
+	log.Fatal("❌ Gagal migrate tabel Ruangan:", err)
+}
+log.Println("✅ Berhasil migrate tabel Ruangan")
 
-	// mrigate tabel jadwal
-	db.AutoMigrate(&models.Jadwal{})
+// migrate tabel jadwal
+if err := db.AutoMigrate(&models.Jadwal{}); err != nil {
+	log.Fatal("❌ Gagal migrate tabel Jadwal:", err)
+}
+log.Println("✅ Berhasil migrate tabel Jadwal")
 
 	// init app
 	app := fiber.New()
