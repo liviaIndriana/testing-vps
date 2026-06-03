@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: siruka_db
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    container_name: siruka_api
+    restart: unless-stopped
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SSLMODE: disable
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_HOST: ${SMTP_HOST}      
+      SMTP_PORT: ${SMTP_PORT}               
+      SMTP_EMAIL: ${SMTP_EMAIL}     
+      SMTP_PASS: ${SMTP_PASS}
+      UPLOAD_PATH: /app/storage/uploads
+    volumes:
+      - ./storage/uploads:/app/storage/uploads
+    working_dir: /app
+    command: ["./server"]
+
+volumes:
+  db_data:
