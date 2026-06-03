@@ -3,14 +3,16 @@ version: "3.9"
 services:
   db:
     container_name: siruka_db
-    image: postgres:16-alpine
+    image: mysql:8.0
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
 
   api:
     container_name: siruka_api
@@ -22,15 +24,14 @@ services:
       - "8081:8081"
     environment:
       DB_HOST: db
-      DB_PORT: 5432
+      DB_PORT: 3306
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      DB_SSLMODE: disable
       JWT_SECRET: ${JWT_SECRET}
-      SMTP_HOST: ${SMTP_HOST}      
-      SMTP_PORT: ${SMTP_PORT}               
-      SMTP_EMAIL: ${SMTP_EMAIL}     
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_EMAIL: ${SMTP_EMAIL}
       SMTP_PASS: ${SMTP_PASS}
       UPLOAD_PATH: /app/storage/uploads
     volumes:
